@@ -67,6 +67,7 @@ class ScanEngine {
       if (!fs.existsSync(filePath)) return null;
       const stat = fs.statSync(filePath);
       if (stat.isDirectory()) return null;
+      if (stat.size === 0) return null; // 0-byte clean file
 
       // Skip files larger than 250MB for real-time responsiveness (configurable)
       if (stat.size > 250 * 1024 * 1024) {

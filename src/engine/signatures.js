@@ -12,7 +12,6 @@ const EICAR_MD5 = '44d88612fea8a8f36de82e1278abb02f';
 const KNOWN_THREAT_HASHES = new Map([
   [EICAR_SHA256, { name: 'EICAR-Test-File (Standard Antivirus Benchmark)', severity: 'Test/Safe', category: 'Benchmark' }],
   ['44d88612fea8a8f36de82e1278abb02f', { name: 'EICAR-Test-File.MD5', severity: 'Test/Safe', category: 'Benchmark' }],
-  ['e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', { name: 'Zero-Byte File Indicator', severity: 'Info', category: 'System' }],
   // Well-known historical malware hashes for benchmarking
   ['09a0877d99c437793ec7b9e65b3b55ad3300a012', { name: 'Trojan.Win32.WannaCry.Generic', severity: 'High', category: 'Ransomware' }],
   ['ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa', { name: 'Trojan.Ransom.WannaCrypt.A', severity: 'Critical', category: 'Ransomware' }],

@@ -15,6 +15,13 @@ async function shredFile(filePath, progressCallback = () => { }) {
     throw new Error(`Target file not found: ${filePath}`);
   }
 
+  // Ensure file permissions allow writing (strip read-only attribute if present)
+  try {
+    fs.chmodSync(filePath, 0o666);
+  } catch (permErr) {
+    // Continue if chmod is not permitted or unsupported on platform
+  }
+
   const stat = fs.statSync(filePath);
   const fileSize = stat.size;
   const fd = fs.openSync(filePath, 'r+');

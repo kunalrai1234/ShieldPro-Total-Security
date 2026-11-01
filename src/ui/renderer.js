@@ -254,24 +254,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td>${new Date(item.quarantinedAt).toLocaleString()}</td>
         <td style="font-family: monospace; font-size: 11.5px; max-width: 250px; overflow: hidden; text-overflow: ellipsis;">${item.originalPath}</td>
         <td>
-          <button class="btn btn-outline" style="padding: 4px 8px; font-size: 11px;" onclick="restoreQuarantine('${item.id}')">Restore</button>
-          <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-left: 4px;" onclick="deleteQuarantine('${item.id}')">Delete</button>
+          <button class="btn btn-outline btn-q-restore" style="padding: 4px 8px; font-size: 11px;" data-action="restore" data-id="${item.id}">Restore</button>
+          <button class="btn btn-danger btn-q-delete" style="padding: 4px 8px; font-size: 11px; margin-left: 4px;" data-action="delete" data-id="${item.id}">Delete</button>
         </td>
       </tr>
     `).join('');
   }
 
-  window.restoreQuarantine = async (id) => {
-    await window.aegis.restoreQuarantine(id);
-    refreshQuarantine();
-    updateHealthScore();
-  };
+  // Event delegation for quarantine table actions
+  const quarantineTableBody = document.getElementById('quarantineTableBody');
+  quarantineTableBody?.addEventListener('click', async (event) => {
+    const target = event.target.closest('button[data-action]');
+    if (!target) return;
+    const action = target.getAttribute('data-action');
+    const id = target.getAttribute('data-id');
 
-  window.deleteQuarantine = async (id) => {
-    await window.aegis.deleteQuarantine(id);
-    refreshQuarantine();
-    updateHealthScore();
-  };
+    if (action === 'restore') {
+      await window.aegis.restoreQuarantine(id);
+      refreshQuarantine();
+      updateHealthScore();
+    } else if (action === 'delete') {
+      await window.aegis.deleteQuarantine(id);
+      refreshQuarantine();
+      updateHealthScore();
+    }
+  });
 
   // 7. Audit Reports
   async function refreshReports() {

@@ -18,6 +18,14 @@ const { isAutoStartEnabled, enableAutoStart, disableAutoStart } = require('./src
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
   app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.show();
+      mainWindow.focus();
+    }
+  });
 }
 
 let mainWindow = null;
@@ -131,6 +139,11 @@ app.on('before-quit', () => {
   realTimeGuard.stop();
 });
 
+app.on('session-end', () => {
+  isQuitting = true;
+  realTimeGuard.stop();
+});
+
 // App Window Management IPC
 ipcMain.on('window-minimize', () => {
   if (mainWindow) mainWindow.minimize();
@@ -164,6 +177,15 @@ ipcMain.handle('scan-full', async () => {
 });
 
 ipcMain.handle('scan-custom', async (_event, folderPath) => {
+  const fs = require('fs');
+  if (!folderPath || typeof folderPath !== 'string' || !fs.existsSync(folderPath)) {
+    return {
+      scannedFiles: 0,
+      threatsDetected: [],
+      startTime: new Date(),
+      endTime: new Date()
+    };
+  }
   appendLog({ type: 'SCAN', description: `Initiated Custom Scan on ${folderPath}` });
   const results = await scanEngine.startScan([folderPath], (progress) => {
     if (mainWindow && !mainWindow.isDestroyed()) {

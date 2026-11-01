@@ -51,8 +51,15 @@ function quarantineFile(targetPath, threatDetails) {
   // Write IV + encrypted content
   fs.writeFileSync(vaultFilePath, Buffer.concat([iv, encrypted]));
 
-  // Remove original file
-  fs.unlinkSync(targetPath);
+  // Remove original file with rollback on failure
+  try {
+    fs.unlinkSync(targetPath);
+  } catch (unlinkErr) {
+    if (fs.existsSync(vaultFilePath)) {
+      fs.unlinkSync(vaultFilePath);
+    }
+    throw new Error(`Failed to isolate target file (removal failed): ${unlinkErr.message}`);
+  }
 
   const manifest = loadManifest();
   const record = {

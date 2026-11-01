@@ -46,15 +46,17 @@ async function getActiveConnections() {
     const lines = stdout.split('\r\n').filter(line => line.trim().length > 0);
     const connections = [];
 
-    // Skip headers
-    for (let i = 4; i < Math.min(lines.length, 50); i++) {
-      const parts = lines[i].trim().split(/\s+/);
+    // Parse all valid TCP/UDP connection rows regardless of header size
+    const validLines = lines.filter(line => /^\s*(TCP|UDP)\s+/i.test(line));
+
+    for (let i = 0; i < Math.min(validLines.length, 50); i++) {
+      const parts = validLines[i].trim().split(/\s+/);
       if (parts.length >= 4) {
-        const proto = parts[0];
+        const proto = parts[0].toUpperCase();
         const localAddress = parts[1];
         const foreignAddress = parts[2];
-        const state = parts.length === 5 ? parts[3] : 'LISTENING';
-        const pid = parts.length === 5 ? parts[4] : parts[3];
+        const state = parts.length >= 5 ? parts[3] : 'LISTENING';
+        const pid = parts.length >= 5 ? parts[4] : parts[3];
 
         connections.push({
           proto,
