@@ -6,20 +6,23 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { getBaseStorageDir } = require('./storagePaths');
 
-const VAULT_DIR = path.resolve(__dirname, '../../quarantine_vault');
-const MANIFEST_PATH = path.join(VAULT_DIR, 'vault_manifest.json');
-const VAULT_KEY = crypto.createHash('sha256').update('aegis-antivirus-local-vault-key-v1').digest();
-
-// Ensure vault directory exists
-if (!fs.existsSync(VAULT_DIR)) {
-  fs.mkdirSync(VAULT_DIR, { recursive: true });
+function getVaultDir() {
+  return getBaseStorageDir();
 }
+
+function getManifestPath() {
+  return path.join(getBaseStorageDir(), 'vault_manifest.json');
+}
+
+const VAULT_KEY = crypto.createHash('sha256').update('aegis-antivirus-local-vault-key-v1').digest();
 
 function loadManifest() {
   try {
-    if (fs.existsSync(MANIFEST_PATH)) {
-      return JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
+    const manifestPath = getManifestPath();
+    if (fs.existsSync(manifestPath)) {
+      return JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     }
   } catch (err) {
     console.error('Failed to load quarantine manifest:', err);
@@ -28,7 +31,11 @@ function loadManifest() {
 }
 
 function saveManifest(manifest) {
-  fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2), 'utf8');
+  try {
+    fs.writeFileSync(getManifestPath(), JSON.stringify(manifest, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Failed to save quarantine manifest:', err);
+  }
 }
 
 /**
@@ -46,7 +53,7 @@ function quarantineFile(targetPath, threatDetails) {
 
   const fileId = crypto.randomUUID();
   const quarantinedFileName = `${fileId}.aegis-vault`;
-  const vaultFilePath = path.join(VAULT_DIR, quarantinedFileName);
+  const vaultFilePath = path.join(getVaultDir(), quarantinedFileName);
 
   // Write IV + encrypted content
   fs.writeFileSync(vaultFilePath, Buffer.concat([iv, encrypted]));
@@ -91,7 +98,7 @@ function restoreFile(fileId) {
   }
 
   const record = manifest[index];
-  const vaultFilePath = path.join(VAULT_DIR, record.vaultFile);
+  const vaultFilePath = path.join(getVaultDir(), record.vaultFile);
 
   if (!fs.existsSync(vaultFilePath)) {
     throw new Error('Vault payload missing on disk');
@@ -130,7 +137,7 @@ function deleteFromQuarantine(fileId) {
   }
 
   const record = manifest[index];
-  const vaultFilePath = path.join(VAULT_DIR, record.vaultFile);
+  const vaultFilePath = path.join(getVaultDir(), record.vaultFile);
   if (fs.existsSync(vaultFilePath)) {
     fs.unlinkSync(vaultFilePath);
   }
@@ -146,4 +153,3 @@ module.exports = {
   restoreFile,
   deleteFromQuarantine
 };
-

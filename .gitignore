@@ -2,4 +2,6 @@ node_modules/
 dist/
 .DS_Store
 quarantine_vault/*.aegis-vault
+*.log
+
 

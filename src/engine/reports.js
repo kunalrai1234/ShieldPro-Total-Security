@@ -5,13 +5,17 @@
 
 const fs = require('fs');
 const path = require('path');
+const { getBaseStorageDir } = require('./storagePaths');
 
-const LOGS_FILE = path.resolve(__dirname, '../../quarantine_vault/audit_logs.json');
+function getLogsFile() {
+  return path.join(getBaseStorageDir(), 'audit_logs.json');
+}
 
 function getLogs() {
   try {
-    if (fs.existsSync(LOGS_FILE)) {
-      return JSON.parse(fs.readFileSync(LOGS_FILE, 'utf8'));
+    const file = getLogsFile();
+    if (fs.existsSync(file)) {
+      return JSON.parse(fs.readFileSync(file, 'utf8'));
     }
   } catch (err) {
     console.error('Error reading audit logs:', err);
@@ -20,6 +24,7 @@ function getLogs() {
 }
 
 function appendLog(event) {
+  const file = getLogsFile();
   const logs = getLogs();
   const entry = {
     id: Date.now().toString(),
@@ -28,7 +33,11 @@ function appendLog(event) {
   };
   logs.unshift(entry);
   if (logs.length > 200) logs.pop(); // Keep last 200 events
-  fs.writeFileSync(LOGS_FILE, JSON.stringify(logs, null, 2), 'utf8');
+  try {
+    fs.writeFileSync(file, JSON.stringify(logs, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Failed to write audit logs:', err);
+  }
   return entry;
 }
 
