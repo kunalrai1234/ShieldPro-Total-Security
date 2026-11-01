@@ -1,7 +1,7 @@
 {
-  "name": "aegis-antivirus",
+  "name": "shieldpro-antivirus",
   "version": "1.0.0",
-  "description": "Aegis Modern Desktop Cybersecurity Suite",
+  "description": "ShieldPro Total Security Desktop Application",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -11,15 +11,16 @@
   "keywords": [
     "antivirus",
     "cybersecurity",
+    "shieldpro",
     "malware-scanner",
     "firewall",
     "privacy-shredder"
   ],
-  "author": "Aegis Security Team",
+  "author": "ShieldPro Security Team",
   "license": "ISC",
   "build": {
-    "appId": "com.aegis.antivirus",
-    "productName": "Aegis Antivirus",
+    "appId": "com.shieldpro.security",
+    "productName": "ShieldPro Total Security",
     "directories": {
       "output": "dist"
     },
@@ -39,8 +40,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Aegis Antivirus",
-      "artifactName": "Aegis-Setup-${version}.${ext}"
+      "shortcutName": "ShieldPro Total Security",
+      "artifactName": "ShieldPro-Setup-${version}.${ext}"
     }
   },
   "devDependencies": {

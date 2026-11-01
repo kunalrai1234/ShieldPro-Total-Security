@@ -39,7 +39,7 @@ const realTimeGuard = new RealTimeGuard({
     // Show Windows Native Notification
     if (Notification.isSupported()) {
       new Notification({
-        title: 'Aegis Real-Time Shield Alert',
+        title: 'ShieldPro Real-Time Shield Alert',
         body: `Threat intercepted: ${threatEvent.threat.threatName}\nFile: ${path.basename(threatEvent.filePath)}`,
         urgency: 'critical'
       }).show();
@@ -65,6 +65,7 @@ function createWindow() {
     minHeight: 600,
     frame: false,
     show: false,
+    icon: path.join(__dirname, 'assets/icons/icon.ico'),
     backgroundColor: '#f8fafc',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -96,14 +97,14 @@ function createTray() {
   // Simple tray setup
   tray = new Tray(path.join(__dirname, 'assets/icons/shield.png'));
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Open Aegis Security Suite', click: () => { mainWindow.show(); mainWindow.focus(); } },
+    { label: 'Open ShieldPro Total Security', click: () => { mainWindow.show(); mainWindow.focus(); } },
     { type: 'separator' },
     { label: 'Real-Time Protection Active', enabled: false },
     { type: 'separator' },
     { label: 'Exit Application', click: () => { isQuitting = true; app.quit(); } }
   ]);
 
-  tray.setToolTip('Aegis Cybersecurity Suite — Protected');
+  tray.setToolTip('ShieldPro Total Security — Protected');
   tray.setContextMenu(contextMenu);
   tray.on('double-click', () => {
     mainWindow.show();
@@ -119,7 +120,7 @@ app.whenReady().then(async () => {
 
   appendLog({
     type: 'SYSTEM',
-    description: 'Aegis Security Engine started & Real-Time Shield engaged.'
+    description: 'ShieldPro Security Engine started & Real-Time Shield engaged.'
   });
 
   // Try creating tray if icon exists or fallback gracefully

@@ -9,7 +9,7 @@ const path = require('path');
 const execAsync = util.promisify(exec);
 
 const REG_KEY = 'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run';
-const APP_REG_NAME = 'AegisAntivirusSuite';
+const APP_REG_NAME = 'ShieldProSecuritySuite';
 
 /**
  * Check if the application is registered to run on Windows startup
