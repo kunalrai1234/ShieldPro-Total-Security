@@ -46,6 +46,7 @@ contextBridge.exposeInMainWorld('aegis', {
   onScanProgress: (callback) => ipcRenderer.on('scan-progress', (_event, data) => callback(data)),
   onScanComplete: (callback) => ipcRenderer.on('scan-complete', (_event, data) => callback(data)),
   onRealTimeThreat: (callback) => ipcRenderer.on('realtime-threat', (_event, data) => callback(data)),
+  onRealTimeSafe: (callback) => ipcRenderer.on('realtime-safe', (_event, data) => callback(data)),
   onShredProgress: (callback) => ipcRenderer.on('shred-progress', (_event, data) => callback(data))
 });
 

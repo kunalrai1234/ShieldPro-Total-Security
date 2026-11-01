@@ -115,8 +115,41 @@ async function runTestSuite() {
   const isAutoStart = await isAutoStartEnabled();
   assert('Boot Manager queries Windows Startup Registry', typeof isAutoStart === 'boolean');
 
+  // 12. Instant Download Protection Sentinel Test
+  const { RealTimeGuard } = require('../src/engine/realTimeGuard');
+  let downloadSafeReported = false;
+  let downloadThreatReported = false;
+
+  const downloadGuard = new RealTimeGuard({
+    autoQuarantine: false,
+    onFileScanned: (evt) => {
+      if (evt.isDownload && evt.isSafe) downloadSafeReported = true;
+    },
+    onThreatDetected: (evt) => {
+      if (evt.isDownload) downloadThreatReported = true;
+    }
+  });
+
+  const downloadSandboxDir = path.join(testDir, 'Downloads');
+  if (!fs.existsSync(downloadSandboxDir)) fs.mkdirSync(downloadSandboxDir, { recursive: true });
+
+  // Simulate clean file download
+  const cleanDownload = path.join(downloadSandboxDir, 'quarterly_report.pdf');
+  fs.writeFileSync(cleanDownload, 'PDF_CLEAN_VALID_REPORT_CONTENT_BENIGN', 'utf8');
+  await downloadGuard.handleFileEvent('CREATE', cleanDownload);
+  assert('Download Sentinel verifies clean download and reports isSafe: true', downloadSafeReported);
+
+  // Simulate infected file download
+  const infectedDownload = path.join(downloadSandboxDir, 'suspicious_setup.pdf.exe');
+  fs.writeFileSync(infectedDownload, 'MZinfected_content_payload', 'utf8');
+  await downloadGuard.handleFileEvent('CREATE', infectedDownload);
+  assert('Download Sentinel intercepts infected download and alerts threat', downloadThreatReported);
+
   // Cleanup test sandbox
   try {
+    if (fs.existsSync(cleanDownload)) fs.unlinkSync(cleanDownload);
+    if (fs.existsSync(infectedDownload)) fs.unlinkSync(infectedDownload);
+    if (fs.existsSync(downloadSandboxDir)) fs.rmdirSync(downloadSandboxDir, { recursive: true });
     if (fs.existsSync(eicarFilePath)) fs.unlinkSync(eicarFilePath);
     if (fs.existsSync(doubleExtFile)) fs.unlinkSync(doubleExtFile);
     if (fs.existsSync(emptyFile)) fs.unlinkSync(emptyFile);

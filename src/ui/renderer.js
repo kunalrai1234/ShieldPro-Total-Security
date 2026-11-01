@@ -168,15 +168,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   window.aegis.onRealTimeThreat((evt) => {
+    if (realTimeLogBody.children.length === 1 && realTimeLogBody.children[0].innerText.includes('Waiting')) {
+      realTimeLogBody.innerHTML = '';
+    }
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${new Date().toLocaleTimeString()}</td>
-      <td><span class="badge badge-warn">${evt.action}</span></td>
-      <td style="font-family: monospace; font-size: 11.5px;">${evt.filePath}</td>
-      <td><span class="badge badge-danger">${evt.threat.threatName} (${evt.isQuarantined ? 'Quarantined' : 'Detected'})</span></td>
+      <td><span class="badge badge-warn">${evt.isDownload ? 'DOWNLOAD' : evt.action}</span></td>
+      <td style="font-family: monospace; font-size: 11.5px; max-width: 280px; overflow: hidden; text-overflow: ellipsis;" title="${evt.filePath}">${evt.fileName}</td>
+      <td><span class="badge badge-danger">🚨 ${evt.threat.threatName} (${evt.isQuarantined ? 'Quarantined' : 'Blocked'})</span></td>
     `;
     realTimeLogBody.prepend(tr);
     updateHealthScore();
+  });
+
+  window.aegis.onRealTimeSafe((evt) => {
+    if (realTimeLogBody.children.length === 1 && realTimeLogBody.children[0].innerText.includes('Waiting')) {
+      realTimeLogBody.innerHTML = '';
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${new Date().toLocaleTimeString()}</td>
+      <td><span class="badge ${evt.isDownload ? 'badge-blue' : 'badge-safe'}">${evt.isDownload ? 'DOWNLOAD' : evt.action}</span></td>
+      <td style="font-family: monospace; font-size: 11.5px; max-width: 280px; overflow: hidden; text-overflow: ellipsis;" title="${evt.filePath}">${evt.fileName}</td>
+      <td><span class="badge badge-safe">✓ SAFE & CLEAN</span></td>
+    `;
+    realTimeLogBody.prepend(tr);
   });
 
   // 4. Firewall & Sockets

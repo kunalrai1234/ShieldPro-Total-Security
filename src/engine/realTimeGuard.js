@@ -1,6 +1,6 @@
 /**
- * AEGIS CYBERSECURITY SUITE
- * Real-Time On-Access Shield (File Watcher & Active Guard)
+ * SHIELDPRO TOTAL SECURITY
+ * Real-Time On-Access Shield & Download Sentinel
  */
 
 const chokidar = require('chokidar');
@@ -10,15 +10,27 @@ const fs = require('fs');
 const { ScanEngine } = require('./scanner');
 const { quarantineFile } = require('./quarantine');
 
+// Temporary in-progress download extensions used by browsers
+const INCOMPLETE_DOWNLOAD_EXTENSIONS = new Set([
+  '.crdownload', // Chrome & Edge
+  '.part',       // Firefox
+  '.download',   // Safari & others
+  '.tmp',        // General temporary download
+  '.opdownload'  // Opera
+]);
+
 class RealTimeGuard {
   constructor(options = {}) {
     this.isActive = false;
     this.watcher = null;
     this.scanner = new ScanEngine();
     this.autoQuarantine = options.autoQuarantine !== false;
+    this.notifyOnSafe = options.notifyOnSafe !== false;
     this.onThreatDetected = options.onThreatDetected || (() => {});
+    this.onFileScanned = options.onFileScanned || (() => {});
     this.onStatusChange = options.onStatusChange || (() => {});
     this.monitoredPaths = [];
+    this.recentlyScanned = new Map(); // Debounce map (path -> timestamp)
   }
 
   getDefaultWatchPaths() {
@@ -37,12 +49,17 @@ class RealTimeGuard {
     this.monitoredPaths = customPaths && customPaths.length > 0 ? customPaths : this.getDefaultWatchPaths();
 
     this.watcher = chokidar.watch(this.monitoredPaths, {
-      ignored: [/(^|[\/\\])\../, '**/*.aegis-vault', '**/quarantine_vault/**'],
+      ignored: [
+        /(^|[\/\\])\../,
+        '**/*.aegis-vault',
+        '**/quarantine_vault/**',
+        '**/vault/**'
+      ],
       persistent: true,
-      ignoreInitial: true, // Only monitor newly created or modified files
+      ignoreInitial: true, // Only monitor newly downloaded or modified files
       awaitWriteFinish: {
-        stabilityThreshold: 500,
-        pollInterval: 100
+        stabilityThreshold: 800, // Wait until file write completes
+        pollInterval: 150
       }
     });
 
@@ -65,8 +82,34 @@ class RealTimeGuard {
   async handleFileEvent(action, filePath) {
     try {
       if (!fs.existsSync(filePath)) return;
-      
+      const stat = fs.statSync(filePath);
+      if (stat.isDirectory()) return;
+
+      const ext = path.extname(filePath).toLowerCase();
+      // Ignore in-progress incomplete browser downloads
+      if (INCOMPLETE_DOWNLOAD_EXTENSIONS.has(ext)) {
+        return;
+      }
+
+      // Debounce: prevent duplicate scan events within 2 seconds
+      const now = Date.now();
+      const lastScan = this.recentlyScanned.get(filePath);
+      if (lastScan && now - lastScan < 2000) {
+        return;
+      }
+      this.recentlyScanned.set(filePath, now);
+      if (this.recentlyScanned.size > 200) {
+        const oldestKey = this.recentlyScanned.keys().next().value;
+        this.recentlyScanned.delete(oldestKey);
+      }
+
+      // Check if file is in Downloads directory
+      const isDownload = filePath.toLowerCase().includes('download');
+      const fileName = path.basename(filePath);
+
+      // Perform file scan
       const threat = await this.scanner.scanSingleFile(filePath);
+
       if (threat) {
         let quarantinedRecord = null;
         if (this.autoQuarantine && threat.severity !== 'Test/Safe') {
@@ -80,14 +123,29 @@ class RealTimeGuard {
         this.onThreatDetected({
           action,
           filePath,
+          fileName,
+          isDownload,
           threat,
           isQuarantined: !!quarantinedRecord,
           quarantinedRecord,
           timestamp: new Date().toISOString()
         });
+      } else {
+        // File is clean & safe!
+        const hashes = await this.scanner.computeFileHashes(filePath).catch(() => ({ sha256: '' }));
+        this.onFileScanned({
+          action,
+          filePath,
+          fileName,
+          isDownload,
+          isSafe: true,
+          fileSize: stat.size,
+          sha256: hashes.sha256 || '',
+          timestamp: new Date().toISOString()
+        });
       }
     } catch (err) {
-      console.error('Real-time file event inspection error:', err);
+      console.error('Real-time download inspection error:', err);
     }
   }
 }
@@ -95,4 +153,3 @@ class RealTimeGuard {
 module.exports = {
   RealTimeGuard
 };
-

@@ -39,8 +39,9 @@ const realTimeGuard = new RealTimeGuard({
     // Show Windows Native Notification
     if (Notification.isSupported()) {
       new Notification({
-        title: 'ShieldPro Real-Time Shield Alert',
+        title: threatEvent.isDownload ? 'ShieldPro Download Shield — Threat Blocked!' : 'ShieldPro Real-Time Shield Alert',
         body: `Threat intercepted: ${threatEvent.threat.threatName}\nFile: ${path.basename(threatEvent.filePath)}`,
+        icon: path.join(__dirname, 'assets/icons/icon.png'),
         urgency: 'critical'
       }).show();
     }
@@ -53,6 +54,26 @@ const realTimeGuard = new RealTimeGuard({
 
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send('realtime-threat', threatEvent);
+    }
+  },
+  onFileScanned: (scanEvent) => {
+    // Notify user when a downloaded file is verified clean and safe
+    if (scanEvent.isDownload && Notification.isSupported()) {
+      new Notification({
+        title: 'ShieldPro Download Shield — File Safe',
+        body: `✅ "${scanEvent.fileName}" is clean & safe to open.\n(SHA-256 verified, 0 threats detected)`,
+        icon: path.join(__dirname, 'assets/icons/icon.png')
+      }).show();
+    }
+
+    appendLog({
+      type: scanEvent.isDownload ? 'DOWNLOAD_SAFE' : 'SCAN_CLEAN',
+      description: `File verified safe: ${scanEvent.fileName}`,
+      details: scanEvent
+    });
+
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('realtime-safe', scanEvent);
     }
   }
 });
