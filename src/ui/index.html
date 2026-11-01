@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis Cybersecurity Suite</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Custom Sleek Titlebar -->
+  <header class="titlebar">
+    <div class="titlebar-brand">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span>AEGIS TOTAL PROTECTION</span>
+    </div>
+    <div class="titlebar-controls">
+      <button class="control-btn" id="btnMinimize" title="Minimize">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
+      </button>
+      <button class="control-btn close" id="btnClose" title="Close to Tray">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <div class="nav-group">
+        <div class="nav-label">Core Defense</div>
+        <div class="nav-item active" data-tab="tab-overview">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          Overview
+        </div>
+        <div class="nav-item" data-tab="tab-scan">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          Virus Scanner
+        </div>
+        <div class="nav-item" data-tab="tab-realtime">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12h5l3 5 4-10 3 5h5"/></svg>
+          Real-Time Shield
+        </div>
+        <div class="nav-item" data-tab="tab-firewall">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="10"/></svg>
+          Firewall & Network
+        </div>
+
+        <div class="nav-label" style="margin-top: 14px;">Privacy & Vault</div>
+        <div class="nav-item" data-tab="tab-shredder">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+          File Shredder
+        </div>
+        <div class="nav-item" data-tab="tab-quarantine">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Quarantine Vault
+        </div>
+        <div class="nav-item" data-tab="tab-reports">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
+          Audit Reports
+        </div>
+        <div class="nav-item" data-tab="tab-settings">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          Settings & Boot
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="status-indicator">
+          <div class="status-dot" id="globalStatusDot"></div>
+          <span id="globalStatusText">Protected</span>
+        </div>
+        <span style="font-size: 11px; color: var(--text-light); font-weight: 600;">v1.0</span>
+      </div>
+    </nav>
+
+    <!-- Main Content Panels -->
+    <main class="content-area">
+      <!-- 1. OVERVIEW TAB -->
+      <section id="tab-overview" class="tab-pane active">
+        <div class="page-header">
+          <h1 class="page-title">Security Dashboard</h1>
+          <p class="page-desc">Real-time status of your computer's defenses and integrity.</p>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-left">
+            <div class="shield-badge">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <polyline points="9 12 11 14 15 10"/>
+              </svg>
+            </div>
+            <div class="hero-info">
+              <h2>Your PC is Protected</h2>
+              <p>Real-Time On-Access Shield and Windows Firewall are actively filtering threats.</p>
+            </div>
+          </div>
+          <div class="score-badge">
+            <div class="score-value" id="healthScoreValue">100</div>
+            <div class="score-label">Protection Score</div>
+          </div>
+        </div>
+
+        <div class="action-grid">
+          <div class="action-card" id="btnTriggerQuickScan">
+            <div class="action-card-header">
+              <div class="action-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              </div>
+              <span class="badge badge-safe">Recommended</span>
+            </div>
+            <div class="action-title">Quick Scan</div>
+            <div class="action-subtitle">Inspect memory, startup programs, and active download directories.</div>
+          </div>
+
+          <div class="action-card" id="btnTriggerFullScan">
+            <div class="action-card-header">
+              <div class="action-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+              </div>
+            </div>
+            <div class="action-title">Full Drive Scan</div>
+            <div class="action-subtitle">Exhaustive hash and heuristic audit of your primary local storage.</div>
+          </div>
+
+          <div class="action-card" id="btnTriggerCustomScan">
+            <div class="action-card-header">
+              <div class="action-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+              </div>
+            </div>
+            <div class="action-title">Custom Scan</div>
+            <div class="action-subtitle">Select a specific folder, portable USB drive, or directory to analyze.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. VIRUS SCANNER TAB -->
+      <section id="tab-scan" class="tab-pane">
+        <div class="page-header">
+          <h1 class="page-title">Malware Scanner</h1>
+          <p class="page-desc">Streaming signature verification, SHA-256 matching, and heuristic inspection.</p>
+        </div>
+
+        <div class="scanner-viewport">
+          <div class="canvas-wrapper">
+            <canvas id="scanCanvas" width="220" height="220"></canvas>
+            <div class="scan-center-stats">
+              <div class="scanned-count" id="scanFilesCount">0</div>
+              <div class="scanned-label">Files Scanned</div>
+            </div>
+          </div>
+
+          <div id="scanStatusMessage" style="font-size: 15px; font-weight: 600; color: var(--text-main);">
+            Scanner Idle
+          </div>
+
+          <div class="current-filepath" id="currentFilePathDisplay">Ready to scan. Select an operation below.</div>
+
+          <div style="display: flex; gap: 12px; margin-top: 24px;">
+            <button class="btn btn-primary" id="btnStartQuickScan">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Start Quick Scan
+            </button>
+            <button class="btn btn-outline" id="btnStartCustomScan">Choose Folder</button>
+            <button class="btn btn-danger" id="btnCancelScan" style="display: none;">Cancel Scan</button>
+          </div>
+        </div>
+
+        <!-- Detected Threats Table -->
+        <div style="margin-top: 28px;">
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Scan Findings</h3>
+          <div class="table-card">
+            <table class="data-table" id="threatsTable">
+              <thead>
+                <tr>
+                  <th>Threat Name</th>
+                  <th>Category</th>
+                  <th>Severity</th>
+                  <th>Detection Method</th>
+                  <th>File Location</th>
+                </tr>
+              </thead>
+              <tbody id="threatsTableBody">
+                <tr>
+                  <td colspan="5" style="text-align: center; color: var(--text-light); padding: 24px;">No active threats found in recent scan.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. REAL-TIME SHIELD TAB -->
+      <section id="tab-realtime" class="tab-pane">
+        <div class="page-header">
+          <h1 class="page-title">Real-Time On-Access Shield</h1>
+          <p class="page-desc">Background watchdog that monitors newly created and modified files instantly.</p>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-left">
+            <div class="shield-badge" style="background: var(--accent-blue-bg); color: var(--accent-blue);">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h5l3 5 4-10 3 5h5"/></svg>
+            </div>
+            <div class="hero-info">
+              <h2>On-Access File Watchdog</h2>
+              <p>Monitors Downloads, Desktop, and Startup folders in real-time.</p>
+            </div>
+          </div>
+          <div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="realTimeToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div style="padding: 16px 20px; font-weight: 600; border-bottom: 1px solid var(--border-subtle);">
+            Live Interception Log
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Action</th>
+                <th>File</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="realTimeLogBody">
+              <tr>
+                <td colspan="4" style="text-align: center; color: var(--text-light); padding: 24px;">Watcher active. Waiting for file system events...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 4. FIREWALL TAB -->
+      <section id="tab-firewall" class="tab-pane">
+        <div class="page-header">
+          <h1 class="page-title">Windows Firewall & Network Auditor</h1>
+          <p class="page-desc">Verify local packet filtering profiles and active listening network ports.</p>
+        </div>
+
+        <div class="action-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="action-card">
+            <div class="action-title">Domain Profile</div>
+            <div id="fwDomainState" style="margin-top: 8px;"><span class="badge badge-safe">Checking...</span></div>
+          </div>
+          <div class="action-card">
+            <div class="action-title">Private Network</div>
+            <div id="fwPrivateState" style="margin-top: 8px;"><span class="badge badge-safe">Checking...</span></div>
+          </div>
+          <div class="action-card">
+            <div class="action-title">Public Network</div>
+            <div id="fwPublicState" style="margin-top: 8px;"><span class="badge badge-safe">Checking...</span></div>
+          </div>
+        </div>
+
+        <div class="table-card" style="margin-top: 20px;">
+          <div style="padding: 16px 20px; font-weight: 600; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+            <span>Active Network Sockets (netstat audit)</span>
+            <button class="btn btn-outline" id="btnRefreshSockets" style="padding: 6px 12px; font-size: 12px;">Refresh</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Protocol</th>
+                <th>Local Address</th>
+                <th>Foreign Address</th>
+                <th>State</th>
+                <th>PID</th>
+              </tr>
+            </thead>
+            <tbody id="socketsTableBody">
+              <tr><td colspan="5" style="text-align: center; padding: 20px;">Auditing network connections...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 5. FILE SHREDDER TAB -->
+      <section id="tab-shredder" class="tab-pane">
+        <div class="page-header">
+          <h1 class="page-title">DoD 5220.22-M File Shredder</h1>
+          <p class="page-desc">Physically overwrite files with zeros, ones, and cryptographic random bytes before deletion.</p>
+        </div>
+
+        <div class="hero-card" style="flex-direction: column; align-items: flex-start; gap: 20px;">
+          <div>
+            <h3>Secure Multi-Pass Erasure</h3>
+            <p style="margin-top: 4px; font-size: 13.5px; color: var(--text-muted);">
+              Standard file deletion only marks directory entries as free. This shredder overwrites the physical sectors on disk 3 times.
+            </p>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-danger" id="btnSelectShredFile">Select File to Permanently Shred</button>
+          </div>
+          <div id="shredStatusDisplay" style="font-size: 13px; font-family: monospace; color: var(--text-muted); display: none;"></div>
+        </div>
+      </section>
+
+      <!-- 6. QUARANTINE VAULT TAB -->
+      <section id="tab-quarantine" class="tab-pane">
+        <div class="page-header">
+          <h1 class="page-title">Quarantine Vault</h1>
+          <p class="page-desc">Isolated files encrypted with AES-256 so they cannot execute on your system.</p>
+        </div>
+
+        <div class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Threat File</th>
+                <th>Threat Identity</th>
+                <th>Quarantined Date</th>
+                <th>Original Location</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="quarantineTableBody">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-light); padding: 24px;">Quarantine vault is empty.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 7. AUDIT REPORTS TAB -->
+      <section id="tab-reports" class="tab-pane">
+        <div class="page-header">
+          <h1 class="page-title">Security Audit Reports</h1>
+          <p class="page-desc">Chronological history of security scans, alerts, and system health changes.</p>
+        </div>
+
+        <div class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Event Type</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="reportsTableBody">
+              <tr>
+                <td colspan="3" style="text-align: center; color: var(--text-light); padding: 24px;">No historical events recorded yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 8. SETTINGS & BOOT TAB -->
+      <section id="tab-settings" class="tab-pane">
+        <div class="page-header">
+          <h1 class="page-title">Settings & Laptop Auto-Start</h1>
+          <p class="page-desc">Configure system startup behavior so protection runs automatically when Windows boots.</p>
+        </div>
+
+        <div class="table-card" style="padding: 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid var(--border-subtle);">
+            <div>
+              <div style="font-size: 15px; font-weight: 600;">Start on Windows Boot (Auto-Start)</div>
+              <div style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+                Automatically launch real-time shield and background watchdog whenever your laptop powers on.
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="autoStartToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 20px;">
+            <div>
+              <div style="font-size: 15px; font-weight: 600;">Close to System Tray</div>
+              <div style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+                Keep real-time shields running in the background when the main window is closed.
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="closeToTrayToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="animations.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
+

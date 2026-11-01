@@ -1,0 +1,53 @@
+{
+  "name": "aegis-antivirus",
+  "version": "1.0.0",
+  "description": "Aegis Modern Desktop Cybersecurity Suite",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node tests/verify-suite.js",
+    "build:exe": "electron-builder --win nsis --x64"
+  },
+  "keywords": [
+    "antivirus",
+    "cybersecurity",
+    "malware-scanner",
+    "firewall",
+    "privacy-shredder"
+  ],
+  "author": "Aegis Security Team",
+  "license": "ISC",
+  "build": {
+    "appId": "com.aegis.antivirus",
+    "productName": "Aegis Antivirus",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Aegis Antivirus",
+      "artifactName": "Aegis-Setup-${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.2.1",
+    "electron-builder": "^26.4.0"
+  },
+  "dependencies": {
+    "chokidar": "^6.0.0"
+  }
+}
